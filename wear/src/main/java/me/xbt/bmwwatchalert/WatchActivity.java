@@ -1,11 +1,13 @@
 package me.xbt.bmwwatchalert;
 
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Vibrator;
 import android.support.wearable.view.WatchViewStub;
 import android.view.View;
 import android.widget.TextView;
@@ -97,6 +99,9 @@ public class WatchActivity extends Activity {
                     public void run() {
                         //toast();
                         toggleColor();
+
+//                        Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+//                        v.vibrate(1000);
                     }
                 });
             }
