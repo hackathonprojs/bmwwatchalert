@@ -62,7 +62,7 @@ public class WatchActivity extends Activity {
             stopTimer();
         }
 
-        startTimer();
+        //startTimer();
     }
 
     public void startTimer() {
@@ -92,17 +92,30 @@ public class WatchActivity extends Activity {
                 //use a handler to run a toast that shows the current timestamp
                 handler.post(new Runnable() {
                     public void run() {
-                        //get the current timeStamp
-                        Calendar calendar = Calendar.getInstance();
-                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd:MMMM:yyyy HH:mm:ss a");
-                        final String strDate = "Warning:\n" + simpleDateFormat.format(calendar.getTime());
+                        //toast();
 
-                        //show the toast
-                        int duration = Toast.LENGTH_SHORT;
-                        Toast toast = Toast.makeText(getApplicationContext(), strDate, duration);
-                        toast.show();
                     }
                 });
+            }
+
+            /**
+             * toggle background color
+             */
+            private void toggleColor() {
+
+            }
+
+            /** show toast */
+            private void toast() {
+                //get the current timeStamp
+                Calendar calendar = Calendar.getInstance();
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd:MMMM:yyyy HH:mm:ss a");
+                final String strDate = "Warning:\n" + simpleDateFormat.format(calendar.getTime());
+
+                //show the toast
+                int duration = Toast.LENGTH_SHORT;
+                Toast toast = Toast.makeText(getApplicationContext(), strDate, duration);
+                toast.show();
             }
         };
     }
