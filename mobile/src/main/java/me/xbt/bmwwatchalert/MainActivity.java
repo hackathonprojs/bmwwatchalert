@@ -57,7 +57,7 @@ public class MainActivity extends ActionBarActivity {
 //                                Log.e(TAG, "ERROR: failed to send Message: " + result.getStatus());
 //                            }
 //                        }
-                        tellWatchConnectedState("connected");
+                        //tellWatchConnectedState("connected");
                     }
                     @Override
                     public void onConnectionSuspended(int cause) {
@@ -180,6 +180,8 @@ public class MainActivity extends ActionBarActivity {
                         public void successCallback(String channel, Object message) {
                             System.out.println("received data from pubnub : " + channel + " : "
                                     + message.getClass() + " : " + message.toString());
+                            // send message to wear
+                            tellWatchConnectedState(message.toString());
                         }
 
                         @Override
@@ -201,7 +203,7 @@ public class MainActivity extends ActionBarActivity {
                 System.out.println(error.toString());
             }
         };
-        pubnub.publish(channelName, "Hello World !!" , callback);
+        //pubnub.publish(channelName, "Hello World !!" , callback);
     }
 
 
