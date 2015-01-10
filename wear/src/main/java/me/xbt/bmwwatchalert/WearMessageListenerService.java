@@ -1,6 +1,8 @@
 package me.xbt.bmwwatchalert;
 
+import android.content.Context;
 import android.content.Intent;
+import android.os.Vibrator;
 import android.util.Log;
 
 import com.google.android.gms.wearable.MessageEvent;
@@ -40,6 +42,9 @@ public class WearMessageListenerService extends WearableListenerService {
                 intent.putExtra(WatchActivity.PARAM_NUM_MSG, ++msgCount);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
+
+                Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                v.vibrate(1000);
 
                 //            final TextView text = (TextView) findViewById(R.id.text);
                 //            text.setText("# of msg received: " + ++msgCount);
