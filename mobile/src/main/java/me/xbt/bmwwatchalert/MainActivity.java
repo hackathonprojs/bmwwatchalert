@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -70,6 +72,16 @@ public class MainActivity extends ActionBarActivity {
 
         // need to add <meta-data> com.google.android.gms.version tag into androidmanifest.xml
         mGoogleApiClient.connect();
+
+
+        // add button listener
+        final Button button = (Button) findViewById(R.id.button);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                tellWatchConnectedState("sending message");
+            }
+        });
     }
 
 
@@ -90,13 +102,14 @@ public class MainActivity extends ActionBarActivity {
             @Override
             protected void onPostExecute(List<Node> nodeList) {
                 for(Node node : nodeList) {
-                    Log.v(TAG, "telling " + node.getDisplayName() + " - " + node.getId() + " i am " + state);
+                    String msg = "telling " + node.getDisplayName() + " - " + node.getId() + " i am " + state;
+                    Log.v(TAG, msg);
 
                     PendingResult<MessageApi.SendMessageResult> result = Wearable.MessageApi.sendMessage(
                             mGoogleApiClient,
                             node.getId(),
                             START_ACTIVITY, //"/listener/lights/" + state,
-                            null
+                            msg.getBytes()
                     );
 
                     result.setResultCallback(new ResultCallback<MessageApi.SendMessageResult>() {

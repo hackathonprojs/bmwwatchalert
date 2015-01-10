@@ -7,6 +7,14 @@ import android.widget.TextView;
 
 public class WatchActivity extends Activity {
 
+    /**
+     * parameter name for msg.
+     * used in intent.putExtra() to pass in a parameter.
+     */
+    public static final String PARAM_MSG = "param_msg";
+    /** # of msg received */
+    public static final String PARAM_NUM_MSG = "param_num_msg";
+
     private TextView mTextView;
 
     @Override
