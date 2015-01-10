@@ -40,6 +40,8 @@ public class WearMessageListenerService extends WearableListenerService {
                 Intent intent = new Intent(this, WatchActivity.class);
                 intent.putExtra(WatchActivity.PARAM_MSG, data);
                 intent.putExtra(WatchActivity.PARAM_NUM_MSG, ++msgCount);
+                boolean alert = data.contains("alert");
+                intent.putExtra(WatchActivity.PARAM_ALERT, alert);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
 
