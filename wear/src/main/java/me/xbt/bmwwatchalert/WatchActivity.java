@@ -1,6 +1,9 @@
 package me.xbt.bmwwatchalert;
 
 import android.app.Activity;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.wearable.view.WatchViewStub;
@@ -73,7 +76,7 @@ public class WatchActivity extends Activity {
         initializeTimerTask();
 
         //schedule the timer, after the first 1000ms the TimerTask will run every 2000ms
-        timer.schedule(timerTask, 1000, 2000); //
+        timer.schedule(timerTask, 1000, 1000); //
     }
 
     public void stopTimer() {
@@ -93,7 +96,7 @@ public class WatchActivity extends Activity {
                 handler.post(new Runnable() {
                     public void run() {
                         //toast();
-
+                        toggleColor();
                     }
                 });
             }
@@ -102,7 +105,31 @@ public class WatchActivity extends Activity {
              * toggle background color
              */
             private void toggleColor() {
+                // Now get a handle to any View contained
+                // within the main layout you are using
+                //View someView = findViewById(R.id.randomViewInMainLayout);
 
+                // Find the root view
+                View root = mTextView.getRootView();
+
+                // Set the color
+
+
+                final int red = getResources().getColor(android.R.color.holo_red_light);
+                final int dark = getResources().getColor(android.R.color.background_dark);
+                //int color = dark;
+                Drawable background = root.getBackground();
+                if (background instanceof ColorDrawable) {
+                    int color = ((ColorDrawable) background).getColor();
+                    if (color != red) {
+                        root.setBackgroundColor(red);
+                    } else {
+                        root.setBackgroundColor(dark);
+                    }
+                }
+
+
+//                getWindow().getDecorView().setBackgroundColor(Color.RED);
             }
 
             /** show toast */
