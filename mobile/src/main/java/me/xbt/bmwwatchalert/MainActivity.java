@@ -17,6 +17,10 @@ import com.google.android.gms.wearable.MessageApi;
 import com.google.android.gms.wearable.Node;
 import com.google.android.gms.wearable.NodeApi;
 import com.google.android.gms.wearable.Wearable;
+import com.pubnub.api.Callback;
+import com.pubnub.api.Pubnub;
+import com.pubnub.api.PubnubError;
+import com.pubnub.api.PubnubException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,6 +76,9 @@ public class MainActivity extends ActionBarActivity {
 
         // need to add <meta-data> com.google.android.gms.version tag into androidmanifest.xml
         mGoogleApiClient.connect();
+
+
+        subscribePubnub();
 
 
         // add button listener
@@ -137,6 +144,66 @@ public class MainActivity extends ActionBarActivity {
         }
         return results;
     }
+
+
+    private void subscribePubnub() {
+        String pubkey = "demo"; // publish key
+        String subkey = "demo"; // subscribe key
+        String channelName = "bmwwatchalert";
+
+        Pubnub pubnub = new Pubnub(pubkey, subkey);
+
+        try {
+            pubnub.subscribe(channelName, new Callback() {
+
+                        @Override
+                        public void connectCallback(String channel, Object message) {
+                            System.out.println("SUBSCRIBE : CONNECT on channel:" + channel
+                                    + " : " + message.getClass() + " : "
+                                    + message.toString());
+                        }
+
+                        @Override
+                        public void disconnectCallback(String channel, Object message) {
+                            System.out.println("SUBSCRIBE : DISCONNECT on channel:" + channel
+                                    + " : " + message.getClass() + " : "
+                                    + message.toString());
+                        }
+
+                        public void reconnectCallback(String channel, Object message) {
+                            System.out.println("SUBSCRIBE : RECONNECT on channel:" + channel
+                                    + " : " + message.getClass() + " : "
+                                    + message.toString());
+                        }
+
+                        @Override
+                        public void successCallback(String channel, Object message) {
+                            System.out.println("received data from pubnub : " + channel + " : "
+                                    + message.getClass() + " : " + message.toString());
+                        }
+
+                        @Override
+                        public void errorCallback(String channel, PubnubError error) {
+                            System.out.println("SUBSCRIBE : ERROR on channel " + channel
+                                    + " : " + error.toString());
+                        }
+                    }
+            );
+        } catch (PubnubException e) {
+            System.out.println(e.toString());
+        }
+
+        Callback callback = new Callback() {
+            public void successCallback(String channel, Object response) {
+                System.out.println(response.toString());
+            }
+            public void errorCallback(String channel, PubnubError error) {
+                System.out.println(error.toString());
+            }
+        };
+        pubnub.publish(channelName, "Hello World !!" , callback);
+    }
+
 
 
 
