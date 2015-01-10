@@ -80,6 +80,8 @@ public class MainActivity extends ActionBarActivity {
         // we will see an error about await cannot be called on ui thread if we do not use asynctask.
         new AsyncTask<Void, Void, List<Node>>(){
 
+            private static final String START_ACTIVITY = "/start_activity";
+
             @Override
             protected List<Node> doInBackground(Void... params) {
                 return getNodes();
@@ -88,12 +90,12 @@ public class MainActivity extends ActionBarActivity {
             @Override
             protected void onPostExecute(List<Node> nodeList) {
                 for(Node node : nodeList) {
-                    Log.v(TAG, "telling " + node.getId() + " i am " + state);
+                    Log.v(TAG, "telling " + node.getDisplayName() + " - " + node.getId() + " i am " + state);
 
                     PendingResult<MessageApi.SendMessageResult> result = Wearable.MessageApi.sendMessage(
                             mGoogleApiClient,
                             node.getId(),
-                            "/listener/lights/" + state,
+                            START_ACTIVITY, //"/listener/lights/" + state,
                             null
                     );
 
@@ -145,5 +147,11 @@ public class MainActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mGoogleApiClient.disconnect();
     }
 }
