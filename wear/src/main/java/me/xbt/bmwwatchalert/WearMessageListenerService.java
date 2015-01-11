@@ -47,8 +47,8 @@ public class WearMessageListenerService extends WearableListenerService {
                 WatchActivity.alert = alert;
                 startActivity(intent);
 
-                Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-                v.vibrate(300);
+//                Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+//                v.vibrate(300);
 
                 //            final TextView text = (TextView) findViewById(R.id.text);
                 //            text.setText("# of msg received: " + ++msgCount);

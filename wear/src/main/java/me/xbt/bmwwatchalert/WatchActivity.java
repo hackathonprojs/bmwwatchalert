@@ -81,8 +81,8 @@ public class WatchActivity extends Activity {
         //initialize the TimerTask's job
         initializeTimerTask();
 
-        //schedule the timer, after the first 1000ms the TimerTask will run every 2000ms
-        timer.schedule(timerTask, 1000, 1000); //
+        //schedule the timer, after the first 500ms the TimerTask will run every 500ms
+        timer.schedule(timerTask, 500, 500); //
     }
 
     public void stopTimer() {
@@ -105,8 +105,8 @@ public class WatchActivity extends Activity {
                             //toast();
                             toggleColor();
 
-                            //                        Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-                            //                        v.vibrate(1000);
+                            Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                            v.vibrate(400);
                         } else {
                             final int dark = getResources().getColor(android.R.color.background_dark);
                             setColor(dark);
