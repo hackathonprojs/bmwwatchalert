@@ -1,6 +1,11 @@
 package me.xbt.bmwwatchalert;
 
+import android.content.Context;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Vibrator;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -8,6 +13,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -22,14 +29,30 @@ import com.pubnub.api.Pubnub;
 import com.pubnub.api.PubnubError;
 import com.pubnub.api.PubnubException;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 
 public class MainActivity extends ActionBarActivity {
 
+    /** whether there is an alert */
+    private static boolean alert = false;
+
     private static final String TAG = "MainActivity: ";
     GoogleApiClient mGoogleApiClient;
+
+    private Timer timer = null;
+    private TimerTask timerTask = null;
+    //we are going to use a handler to be able to run in our TimerTask
+    final Handler handler = new Handler();
+
+
+    private TextView mTextView = null;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,12 +104,15 @@ public class MainActivity extends ActionBarActivity {
         subscribePubnub();
 
 
+        mTextView = (TextView) findViewById(R.id.textView);
+
         // add button listener
         final Button button = (Button) findViewById(R.id.button);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 tellWatchConnectedState("{\"alert\": true}");
+                alert = true;
             }
         });
         final Button button2 = (Button) findViewById(R.id.button2);
@@ -94,8 +120,11 @@ public class MainActivity extends ActionBarActivity {
             @Override
             public void onClick(View v) {
                 tellWatchConnectedState("sending message");
+                alert = false;
             }
         });
+
+        startTimer();
     }
 
 
@@ -189,6 +218,7 @@ public class MainActivity extends ActionBarActivity {
                                     + message.getClass() + " : " + message.toString());
                             // send message to wear
                             tellWatchConnectedState(message.toString());
+                            alert = (message.toString().contains("alert"));
                         }
 
                         @Override
@@ -242,5 +272,102 @@ public class MainActivity extends ActionBarActivity {
     protected void onDestroy() {
         super.onDestroy();
         mGoogleApiClient.disconnect();
+    }
+
+
+
+
+
+    public void startTimer() {
+        //set a new Timer
+        timer = new Timer();
+
+        //initialize the TimerTask's job
+        initializeTimerTask();
+
+        //schedule the timer, after the first 500ms the TimerTask will run every 500ms
+        timer.schedule(timerTask, 500, 500); //
+    }
+
+    public void stopTimer() {
+        //stop the timer, if it's not already null
+        if (timer != null) {
+            timer.cancel();
+            timer = null;
+        }
+    }
+
+    public void initializeTimerTask() {
+
+        timerTask = new TimerTask() {
+            public void run() {
+
+                //use a handler to run a toast that shows the current timestamp
+                handler.post(new Runnable() {
+                    public void run() {
+                        if (alert) {
+                            //toast();
+                            toggleColor();
+
+                            Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                            v.vibrate(400);
+                        } else {
+                            final int dark = getResources().getColor(android.R.color.background_dark);
+                            setColor(dark);
+                        }
+                    }
+                });
+            }
+
+            private void setColor(int color) {
+                // Find the root view
+                View root = mTextView.getRootView();
+                root.setBackgroundColor(color);
+            }
+
+            /**
+             * toggle background color
+             */
+            private void toggleColor() {
+                // Now get a handle to any View contained
+                // within the main layout you are using
+                //View someView = findViewById(R.id.randomViewInMainLayout);
+
+                // Find the root view
+                View root = mTextView.getRootView();
+
+                // Set the color
+
+
+                final int red = getResources().getColor(android.R.color.holo_red_light);
+                final int dark = getResources().getColor(android.R.color.background_dark);
+                //int color = dark;
+                Drawable background = root.getBackground();
+                if (background instanceof ColorDrawable) {
+                    int color = ((ColorDrawable) background).getColor();
+                    if (color != red) {
+                        root.setBackgroundColor(red);
+                    } else {
+                        root.setBackgroundColor(dark);
+                    }
+                }
+
+
+//                getWindow().getDecorView().setBackgroundColor(Color.RED);
+            }
+
+            /** show toast */
+            private void toast() {
+                //get the current timeStamp
+                Calendar calendar = Calendar.getInstance();
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd:MMMM:yyyy HH:mm:ss a");
+                final String strDate = "Warning:\n" + simpleDateFormat.format(calendar.getTime());
+
+                //show the toast
+                int duration = Toast.LENGTH_SHORT;
+                Toast toast = Toast.makeText(getApplicationContext(), strDate, duration);
+                toast.show();
+            }
+        };
     }
 }
