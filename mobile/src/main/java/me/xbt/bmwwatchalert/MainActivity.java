@@ -1,5 +1,6 @@
 package me.xbt.bmwwatchalert;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -37,7 +38,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends Activity {
 
     /** whether there is an alert */
     private static boolean alert = false;
