@@ -10,10 +10,11 @@
     <Button
         android:layout_width="400dp"
         android:layout_height="400dp"
-        android:text="alert"
+        android:text=""
         android:id="@+id/button"
         android:layout_above="@+id/textView"
         android:layout_centerHorizontal="true"
+        android:background="@android:color/transparent"
          />
 
     <TextView android:text="ALERT" android:layout_width="wrap_content"
@@ -27,9 +28,11 @@
     <Button
         android:layout_width="400dp"
         android:layout_height="400dp"
-        android:text="stop"
+        android:text=""
         android:id="@+id/button2"
         android:layout_below="@+id/textView"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:background="@android:color/transparent"
+        />
 
 </RelativeLayout>
