@@ -43,6 +43,8 @@ public class WearMessageListenerService extends WearableListenerService {
                 boolean alert = data.contains("alert");
                 intent.putExtra(WatchActivity.PARAM_ALERT, alert);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                WatchActivity.alert = alert;
                 startActivity(intent);
 
                 Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);

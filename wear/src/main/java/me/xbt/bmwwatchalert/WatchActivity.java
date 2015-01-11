@@ -20,6 +20,9 @@ import java.util.TimerTask;
 
 public class WatchActivity extends Activity {
 
+    /** whether there is an alert */
+    public static boolean alert = false;
+
     /**
      * parameter name for msg.
      * used in intent.putExtra() to pass in a parameter.
@@ -54,18 +57,19 @@ public class WatchActivity extends Activity {
         });
 
         Bundle extras = getIntent().getExtras();
-        if (extras != null) {
-            String msg = extras.getString(PARAM_MSG);
-            int numMsg = extras.getInt(PARAM_NUM_MSG);
-            boolean alert = extras.getBoolean(PARAM_ALERT);
-            if (alert) {
-                startTimer();
-            } else {
-                stopTimer();
-            }
-        } else {
-            stopTimer();
-        }
+//        if (extras != null) {
+//            String msg = extras.getString(PARAM_MSG);
+//            int numMsg = extras.getInt(PARAM_NUM_MSG);
+//            boolean alert = extras.getBoolean(PARAM_ALERT);
+//            if (alert) {
+//                startTimer();
+//            } else {
+//                stopTimer();
+//            }
+//        } else {
+//            stopTimer();
+//        }
+        startTimer();
 
         //startTimer();
     }
@@ -97,13 +101,24 @@ public class WatchActivity extends Activity {
                 //use a handler to run a toast that shows the current timestamp
                 handler.post(new Runnable() {
                     public void run() {
-                        //toast();
-                        toggleColor();
+                        if (alert) {
+                            //toast();
+                            toggleColor();
 
-//                        Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-//                        v.vibrate(1000);
+                            //                        Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                            //                        v.vibrate(1000);
+                        } else {
+                            final int dark = getResources().getColor(android.R.color.background_dark);
+                            setColor(dark);
+                        }
                     }
                 });
+            }
+
+            private void setColor(int color) {
+                // Find the root view
+                View root = mTextView.getRootView();
+                root.setBackgroundColor(color);
             }
 
             /**
