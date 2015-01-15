@@ -74,7 +74,14 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
+
+//                issue: sometimes sending message to watch does not work.
+//        2 possible hypothesis:
+//        1. we need to call GoogleApiClient connect() again after sometime or after onResume or something
+//        2. otherwise, the nodeList is empty?
+
+
+                mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
                     @Override
                     public void onConnected(Bundle connectionHint) {
