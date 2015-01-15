@@ -53,7 +53,21 @@ public class MainActivity extends Activity {
 
 
     private TextView mTextView = null;
+    private TextView mLogField = null;
 
+    private StringBuffer logFieldText = new StringBuffer();
+
+    private void log(String msg) {
+        logFieldText.append(msg);
+        if (mLogField != null) {
+            mLogField.setText(logFieldText.toString());
+        }
+    }
+
+    /** call log(), but append "\n" at the end.  like print() and println()'s difference */
+    private void logln(String msg) {
+        log(msg + "\n");
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +79,7 @@ public class MainActivity extends Activity {
                     @Override
                     public void onConnected(Bundle connectionHint) {
                         Log.d(TAG, "onConnected: " + connectionHint);
+                        logln("onConnected: " + connectionHint);
                         //  "onConnected: null" is normal.
                         //  There's nothing in our bundle.
 
@@ -86,18 +101,21 @@ public class MainActivity extends Activity {
                     @Override
                     public void onConnectionSuspended(int cause) {
                         Log.d(TAG, "onConnectionSuspended: " + cause);
+                        logln("onConnectionSuspended: " + cause);
                     }
                 })
                 .addOnConnectionFailedListener(new GoogleApiClient.OnConnectionFailedListener() {
                     @Override
                     public void onConnectionFailed(ConnectionResult result) {
                         Log.d(TAG, "onConnectionFailed: " + result);
+                        logln("onConnectionFailed: " + result);
                     }
                 })
                         // Request access only to the Wearable API
                 .addApi(Wearable.API)
                 .build();
 
+        // should i do connect() in onResume()?
         // need to add <meta-data> com.google.android.gms.version tag into androidmanifest.xml
         mGoogleApiClient.connect();
 
@@ -106,18 +124,32 @@ public class MainActivity extends Activity {
 
 
         mTextView = (TextView) findViewById(R.id.textView);
+        mLogField = (TextView) findViewById(R.id.logField);
 
         // add button listener
         final Button button = (Button) findViewById(R.id.button);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                boolean isConnected = mGoogleApiClient.isConnected();
+                logln("mGoogleApiClient.isConnected=" + isConnected);
                 tellWatchConnectedState("{\"alert\": true}");
                 alert = true;
             }
         });
         final Button button2 = (Button) findViewById(R.id.button2);
         button2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                boolean isConnected = mGoogleApiClient.isConnected();
+                logln("mGoogleApiClient.isConnected=" + isConnected);
+                mGoogleApiClient.connect();
+                tellWatchConnectedState("{\"alert\": true}");
+                alert = true;
+            }
+        });
+        final Button button3 = (Button) findViewById(R.id.button3);
+        button3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 tellWatchConnectedState("sending message");
@@ -145,9 +177,12 @@ public class MainActivity extends Activity {
 
             @Override
             protected void onPostExecute(List<Node> nodeList) {
+                Log.v(TAG, "# node=" + nodeList.size());
+                logln("# node=" + nodeList.size());
                 for(Node node : nodeList) {
                     String msg = "telling " + node.getDisplayName() + " - " + node.getId() + " i am " + state;
                     Log.v(TAG, msg);
+                    logln(msg);
 
                     PendingResult<MessageApi.SendMessageResult> result = Wearable.MessageApi.sendMessage(
                             mGoogleApiClient,
@@ -160,6 +195,7 @@ public class MainActivity extends Activity {
                         @Override
                         public void onResult(MessageApi.SendMessageResult sendMessageResult) {
                             Log.v(TAG, "Phone: " + sendMessageResult.getStatus().getStatusMessage());
+                            logln("Phone: " + sendMessageResult.getStatus().getStatusMessage());
                         }
                     });
                 }
